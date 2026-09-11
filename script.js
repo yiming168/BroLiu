@@ -1,5 +1,7 @@
 // 填入真实信息后自动生成拨号链接、邮箱链接与微信号；留空时显示“待补充”。
-const CONTACT = { phone: '', wechat: '', email: '' };
+const CONTACT = { phone: '4313389957', wechat: '', email: '' };
+// 前往 https://web3forms.com 用刘哥的邮箱免费申请 Access Key，替换下面的占位字符串。
+const WEB3FORMS_ACCESS_KEY = 'e17d0df3-39f2-447a-943a-c40347c37c3b';
 const navigation = document.getElementById('navigation');
 const menuButton = document.querySelector('.menu-toggle');
 function closeMenu() { navigation.classList.remove('is-open'); menuButton.setAttribute('aria-expanded', 'false'); }
@@ -36,3 +38,34 @@ document.querySelector('.dialog-close').addEventListener('click', () => dialog.c
 dialog.addEventListener('close', () => document.body.classList.remove('modal-open'));
 dialog.addEventListener('click', event => { if (event.target === dialog) { const rect = dialog.getBoundingClientRect(); if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) dialog.close(); } });
 document.querySelector('.dialog-contact').addEventListener('click', () => { dialog.close(); document.getElementById('contact').scrollIntoView({behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth'}); });
+const messageForm = document.getElementById('message-form');
+const formStatus = document.getElementById('form-status');
+messageForm.addEventListener('submit', async event => {
+  event.preventDefault();
+  if (messageForm.elements.botcheck.checked) return;
+  if (WEB3FORMS_ACCESS_KEY === 'YOUR_WEB3FORMS_ACCESS_KEY') {
+    formStatus.textContent = '留言功能尚未配置，请直接通过电话或微信联系。';
+    return;
+  }
+  const submitButton = messageForm.querySelector('button[type="submit"]');
+  const formData = new FormData(messageForm);
+  formData.set('access_key', WEB3FORMS_ACCESS_KEY);
+  formData.set('subject', 'Bro Liu 网站新留言');
+  formData.set('from_name', 'Bro Liu 网站留言表单');
+  submitButton.disabled = true;
+  formStatus.textContent = '正在发送…';
+  try {
+    const response = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: formData, headers: { Accept: 'application/json' } });
+    const result = await response.json();
+    if (result.success) {
+      formStatus.textContent = '留言已发送，我们会尽快联系你。';
+      messageForm.reset();
+    } else {
+      formStatus.textContent = '发送失败，请稍后重试，或直接联系我们。';
+    }
+  } catch (error) {
+    formStatus.textContent = '发送失败，请检查网络后重试。';
+  } finally {
+    submitButton.disabled = false;
+  }
+});
