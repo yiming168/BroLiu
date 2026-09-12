@@ -1,7 +1,7 @@
 // 填入真实信息后自动生成拨号链接、邮箱链接与微信号；留空时显示“待补充”。
 const CONTACT = { phone: '4313389957', wechat: '', email: '' };
 // 前往 https://web3forms.com 用刘哥的邮箱免费申请 Access Key，替换下面的占位字符串。
-const WEB3FORMS_ACCESS_KEY = 'e17d0df3-39f2-447a-943a-c40347c37c3b';
+const WEB3FORMS_ACCESS_KEY = '2e07bf55-91ba-4752-86ab-ef895b1340c5';
 const navigation = document.getElementById('navigation');
 const menuButton = document.querySelector('.menu-toggle');
 function closeMenu() { navigation.classList.remove('is-open'); menuButton.setAttribute('aria-expanded', 'false'); }
